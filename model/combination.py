@@ -1,3 +1,6 @@
+from .combination_comparison import CombinationComparison
+
+
 class Combination:
     combination_length = 4
     number_of_possibilities = 8
@@ -45,3 +48,27 @@ class Combination:
             if self.values[index] != other.values[index]:
                 return False
         return True
+
+    def compare_with_combination(self, combination):
+        accurate_guess = 0
+        misplaced_guess = 0
+        values_1 = self.values
+        values_2 = combination.values
+        non_correct_guesses_1 = []
+        non_correct_guesses_2 = []
+        for index in range(self.combination_length):
+            if values_1[index] == values_2[index]:
+                accurate_guess += 1
+            else:
+                non_correct_guesses_1.append(values_1[index])
+                non_correct_guesses_2.append(values_2[index])
+
+        for value in non_correct_guesses_1:
+            if value in non_correct_guesses_2:
+                misplaced_guess += 1
+                non_correct_guesses_2.remove(value)
+
+        return CombinationComparison(
+            accurate_guess=accurate_guess,
+            misplaced_guess=misplaced_guess
+        )

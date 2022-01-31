@@ -1,6 +1,7 @@
 import pytest
 
 from .combination import Combination
+from .combination_comparison import CombinationComparison
 
 
 class TestCombination:
@@ -76,3 +77,35 @@ class TestCombination:
             values="1234",
         )
         assert combination_1 == combination_2
+
+    @pytest.mark.parametrize(
+        "values_1,values_2,correct_guess,misplaced_guess",
+        [
+            ("1234", "1234", 4, 0),
+            ("1234", "4321", 0, 4),
+            ("1234", "5677", 0, 0),
+            ("1234", "1545", 1, 1),
+            ("1111", "1111", 4, 0),
+            ("1111", "1221", 2, 0),
+            ("1122", "1331", 1, 1),
+            ("1122", "3311", 0, 2),
+        ]
+    )
+    def test_combination_comparison(
+            self,
+            values_1,
+            values_2,
+            correct_guess,
+            misplaced_guess
+    ):
+        combination_1 = Combination(
+            values=values_1,
+        )
+        combination_2 = Combination(
+            values=values_2,
+        )
+        expected_combination_comparison = CombinationComparison(
+            accurate_guess=correct_guess,
+            misplaced_guess=misplaced_guess
+        )
+        assert expected_combination_comparison == combination_1.compare_with_combination(combination_2)

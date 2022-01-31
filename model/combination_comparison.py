@@ -1,6 +1,3 @@
-from .combination import Combination
-
-
 class CombinationComparison:
     def __init__(
             self,
@@ -27,6 +24,8 @@ class CombinationComparison:
         return True
 
     def validator(self):
+        from .combination import Combination
+
         if type(self.misplaced_guess) is not int:
             raise Exception(f"Misplaced guess should be int not {type(self.misplaced_guess)}")
         if type(self.accurate_guess) is not int:
