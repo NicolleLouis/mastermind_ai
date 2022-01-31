@@ -35,3 +35,13 @@ class Combination:
         for value in self.values:
             if value not in range(self.number_of_possibilities):
                 raise Exception(f"Value not legal: {value}")
+
+    def __eq__(self, other):
+        if type(other) is not Combination:
+            raise Exception(f"Can only compare Combination not {type(other)}")
+        if len(self.values) != len(other.values):
+            return False
+        for index in range(self.combination_length):
+            if self.values[index] != other.values[index]:
+                return False
+        return True

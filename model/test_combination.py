@@ -51,3 +51,28 @@ class TestCombination:
             Combination(
                 values=values,
             )
+
+    def test_equality_case_uncomparable(self):
+        combination = Combination(
+            values="1234",
+        )
+        with pytest.raises(Exception):
+            combination.__eq__("1234")
+
+    def test_equality_case_distinct(self):
+        combination_1 = Combination(
+            values="1234",
+        )
+        combination_2 = Combination(
+            values="1235",
+        )
+        assert not combination_1 == combination_2
+
+    def test_equality_case_success(self):
+        combination_1 = Combination(
+            values="1234",
+        )
+        combination_2 = Combination(
+            values="1234",
+        )
+        assert combination_1 == combination_2
