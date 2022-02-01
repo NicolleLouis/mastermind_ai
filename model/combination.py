@@ -1,4 +1,5 @@
 from .combination_comparison import CombinationComparison
+from .guess import Guess
 
 
 class Combination:
@@ -72,3 +73,7 @@ class Combination:
             accurate_guess=accurate_guess,
             misplaced_guess=misplaced_guess
         )
+
+    def is_guess_coherent(self, guess: Guess):
+        real_combination_comparison = self.compare_with_combination(guess.combination)
+        return real_combination_comparison == guess.combination_comparison

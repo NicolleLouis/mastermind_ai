@@ -2,6 +2,7 @@ import pytest
 
 from .combination import Combination
 from .combination_comparison import CombinationComparison
+from .guess import Guess
 
 
 class TestCombination:
@@ -109,3 +110,33 @@ class TestCombination:
             misplaced_guess=misplaced_guess
         )
         assert expected_combination_comparison == combination_1.compare_with_combination(combination_2)
+
+    def test_is_guess_coherent_case_false(self):
+        combination = Combination(
+            values="1111",
+        )
+        guess = Guess(
+            combination=Combination(
+                values="2222",
+            ),
+            combination_comparison=CombinationComparison(
+                accurate_guess=4,
+                misplaced_guess=0
+            )
+        )
+        assert not combination.is_guess_coherent(guess)
+
+    def test_is_guess_coherent_case_true(self):
+        combination = Combination(
+            values="1111",
+        )
+        guess = Guess(
+            combination=Combination(
+                values="1111",
+            ),
+            combination_comparison=CombinationComparison(
+                accurate_guess=4,
+                misplaced_guess=0
+            )
+        )
+        assert combination.is_guess_coherent(guess)
