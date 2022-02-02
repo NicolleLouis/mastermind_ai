@@ -1,8 +1,8 @@
 import pytest
 
-from .combination import Combination
-from .combination_comparison import CombinationComparison
-from .guess import Guess
+from game.combination import Combination
+from game.combination_comparison import CombinationComparison
+from game.guess import Guess
 
 
 class TestGuess:

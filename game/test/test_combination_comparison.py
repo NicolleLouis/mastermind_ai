@@ -1,6 +1,6 @@
 import pytest
 
-from .combination_comparison import CombinationComparison
+from game.combination_comparison import CombinationComparison
 
 
 class TestCombinationComparison:

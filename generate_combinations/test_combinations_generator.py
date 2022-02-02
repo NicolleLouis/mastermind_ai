@@ -1,9 +1,10 @@
 from unittest.mock import MagicMock
 
+from file_service.file_service import FileService
 from .combinations_generator import CombinationGenerator
 
 
-class TestCombinationGenerator():
+class TestCombinationGenerator:
     def test_add_one_possibility_first_step(self):
         values = [[0]]
         expected_result = [
@@ -36,5 +37,7 @@ class TestCombinationGenerator():
 
     def test_generate_all_possibilities(self):
         CombinationGenerator.add_one_possibility = MagicMock()
+        FileService.write_list_to_file = MagicMock()
         CombinationGenerator.generate_all_possibilities()
+        FileService.write_list_to_file.assert_called()
         assert CombinationGenerator.add_one_possibility.call_count == 3
