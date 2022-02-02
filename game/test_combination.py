@@ -13,9 +13,16 @@ class TestCombination:
         expected_result = "1234"
         assert str(combination) == expected_result
 
-    def test_import_str(self):
+    def test_import_str_case_numeric(self):
         combination = Combination(
             values="1234"
+        )
+        expected_values = [1, 2, 3, 4]
+        assert combination.values == expected_values
+
+    def test_import_str_case_list(self):
+        combination = Combination(
+            values="[1, 2, 3, 4]"
         )
         expected_values = [1, 2, 3, 4]
         assert combination.values == expected_values
@@ -53,6 +60,42 @@ class TestCombination:
             Combination(
                 values=values,
             )
+
+    @pytest.mark.parametrize(
+        "values",
+        [
+            "[1, 2, 3, 4]",
+            "1234",
+            "1,2,3,4",
+            "1[234",
+            "12]34",
+            "12     34",
+        ]
+    )
+    def test_clean_list_pattern_input(self, values):
+        expected_result = "1234"
+        assert Combination.clean_list_pattern_input(values) == expected_result
+
+    def test_clean_input_case_numeric(self):
+        values = "1234"
+        expected_result = ["1", "2", "3", "4"]
+        assert Combination.clean_input(values) == expected_result
+
+    def test_clean_input_case_list(self):
+        values = "[1, 2, 3, 4]"
+        expected_result = ["1", "2", "3", "4"]
+        assert Combination.clean_input(values) == expected_result
+
+    @pytest.mark.parametrize(
+        "values",
+        [
+            "1, 2, 3, 4",
+            "['1', '2', '3', '4']",
+        ]
+    )
+    def test_clean_input_case_exception(self, values):
+        with pytest.raises(Exception):
+            Combination.clean_input(values)
 
     def test_equality_case_uncomparable(self):
         combination = Combination(

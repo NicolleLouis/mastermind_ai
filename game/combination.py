@@ -1,3 +1,5 @@
+import re
+
 from .combination_comparison import CombinationComparison
 from .guess import Guess
 
@@ -10,7 +12,7 @@ class Combination:
         if type(values) is list:
             self.values = values
         elif type(values) is str:
-            self.values = list(values)
+            self.values = self.clean_input(values)
 
         self.clean()
         self.validator()
@@ -24,6 +26,28 @@ class Combination:
                 )
             )
         )
+
+    @classmethod
+    def clean_input(cls, values):
+        numeric_pattern = r'^\d+$'
+        list_pattern = r'^\[( ?\d,?)+\]$'
+        if bool(re.search(numeric_pattern, values)):
+            return list(values)
+        if bool(re.search(list_pattern, values)):
+            return list(cls.clean_list_pattern_input(values))
+        raise Exception(f"Pattern not recognized: {values}")
+
+    @staticmethod
+    def clean_list_pattern_input(values):
+        undesirable_characters = [
+            "[",
+            "]",
+            " ",
+            ",",
+        ]
+        for undesirable_character in undesirable_characters:
+            values = values.replace(undesirable_character, '')
+        return values
 
     def clean(self):
         self.values = list(
