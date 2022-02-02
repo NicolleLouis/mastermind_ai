@@ -1,6 +1,7 @@
 import pytest
 
 from .combination import Combination
+from .combination_comparison import CombinationComparison
 from .guess import Guess
 
 
@@ -51,3 +52,79 @@ class TestGuess:
                 ),
                 combination_comparison=1234
             )
+
+    def test_equality_case_breaking(self):
+        guess = Guess(
+                combination=Combination(
+                    values="1111"
+                ),
+                combination_comparison=CombinationComparison(
+                    accurate_guess=0,
+                    misplaced_guess=0,
+                )
+            )
+        with pytest.raises(Exception):
+            guess.__eq__(1234)
+
+    def test_equality_case_false_combination(self):
+        guess_1 = Guess(
+                combination=Combination(
+                    values="1111"
+                ),
+                combination_comparison=CombinationComparison(
+                    accurate_guess=0,
+                    misplaced_guess=0,
+                )
+            )
+        guess_2 = Guess(
+            combination=Combination(
+                values="1121"
+            ),
+            combination_comparison=CombinationComparison(
+                accurate_guess=0,
+                misplaced_guess=0,
+            )
+        )
+        assert not guess_1 == guess_2
+
+    def test_equality_case_false_combination_comparison(self):
+        guess_1 = Guess(
+                combination=Combination(
+                    values="1111"
+                ),
+                combination_comparison=CombinationComparison(
+                    accurate_guess=0,
+                    misplaced_guess=0,
+                )
+            )
+        guess_2 = Guess(
+            combination=Combination(
+                values="1111"
+            ),
+            combination_comparison=CombinationComparison(
+                accurate_guess=1,
+                misplaced_guess=0,
+            )
+        )
+        assert not guess_1 == guess_2
+
+    def test_equality_case_true(self):
+        guess_1 = Guess(
+                combination=Combination(
+                    values="1111"
+                ),
+                combination_comparison=CombinationComparison(
+                    accurate_guess=0,
+                    misplaced_guess=0,
+                )
+            )
+        guess_2 = Guess(
+            combination=Combination(
+                values="1111"
+            ),
+            combination_comparison=CombinationComparison(
+                accurate_guess=0,
+                misplaced_guess=0,
+            )
+        )
+        assert guess_1 == guess_2

@@ -23,3 +23,8 @@ class Guess:
         if self.combination_comparison is not None:
             if type(self.combination_comparison) is not CombinationComparison:
                 raise Exception(f"Combination hasn't got the correct type: {type(self.combination_comparison)}")
+
+    def __eq__(self, other):
+        if type(other) is not Guess:
+            raise Exception(f"Can only compare with Guess not {type(other)}")
+        return self.combination == other.combination and self.combination_comparison == other.combination_comparison
