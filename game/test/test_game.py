@@ -4,6 +4,7 @@ from unittest.mock import Mock
 import pytest
 
 from file_service.file_service import FileService
+from game.combination import Combination
 from game.game_model import Game
 from game.step import Step
 from generate_combinations.combinations_generator import CombinationGenerator
@@ -46,3 +47,18 @@ class TestGame:
         game.step()
         assert len(game.steps) == 1
         assert type(game.current_step) is Step
+
+    def test_choose_random_solution(self):
+        FileService.write_list_to_file(Game.game_file, ["1234"])
+        Game.reset_file = Mock()
+        Game.run = Mock()
+        game = Game()
+        solution = game.choose_random_solution()
+        assert solution == Combination("1234")
+
+    def test_automatic_solution_choice(self):
+        FileService.write_list_to_file(Game.game_file, ["1234"])
+        Game.reset_file = Mock()
+        game = Game(manual=False)
+        assert game.solution == Combination("1234")
+        assert not game.manual

@@ -1,6 +1,8 @@
+import random
 from typing import Optional
 
 from file_service.file_service import FileService
+from game.combination import Combination
 from game.step import Step
 from generate_combinations.combinations_generator import CombinationGenerator
 
@@ -9,7 +11,10 @@ class Game:
     game_file = "file/game_file.txt"
     reference_file = CombinationGenerator.all_possibilities_file
 
-    def __init__(self):
+    def __init__(self, manual=True):
+        self.manual = manual
+        self.solution = None if self.manual else self.choose_random_solution()
+
         self.steps = []
         self.current_step: Optional[Step] = None
 
@@ -31,7 +36,11 @@ class Game:
         return False
 
     def step(self):
-        step = Step(self.game_file)
+        step = Step(
+            self.game_file,
+            verbose=self.manual,
+            solution=self.solution
+        )
         self.steps.append(step)
         self.current_step = step
 
@@ -58,6 +67,13 @@ class Game:
                 lambda step: str(step.guess.combination),
                 self.steps
             )
+        )
+
+    def choose_random_solution(self):
+        potential_solutions = FileService.read_lines(self.game_file)
+        answer = random.choice(potential_solutions)
+        return Combination(
+            values=answer
         )
 
     def display_victory(self):

@@ -17,14 +17,14 @@ class TestStep:
         builtins.print = MagicMock()
         step = Step(file=TestStep.test_file)
         step.display_potential_solution()
-        builtins.print.assert_called_with(str(step.solution))
+        builtins.print.assert_called_with(str(step.answer))
 
-    def test_choose_random_solution(self):
+    def test_choose_random_answer(self):
         FileService.write_list_to_file(TestStep.test_file, ["1234"])
         expected_combination = Combination("1234")
         builtins.input = MagicMock(side_effect=[4, 0])
         step = Step(file=TestStep.test_file)
-        result = step.choose_random_solution()
+        result = step.choose_random_answer()
         assert result == expected_combination
         assert step.number_of_potential_solution_before_step == 1
 
@@ -32,7 +32,7 @@ class TestStep:
         FileService.write_list_to_file(TestStep.test_file, ["1234"])
         builtins.input = Mock(side_effect=[1, 0, 1, 0])
         step = Step(file=TestStep.test_file)
-        expected_result = (1, 0)
+        expected_result = CombinationComparison(1, 0)
         assert expected_result == step.gather_inputs()
 
     def test_step_init(self):
@@ -79,3 +79,23 @@ class TestStep:
         builtins.input = Mock(side_effect=[4, 0])
         step = Step(file=TestStep.test_file)
         assert step.is_victory
+
+    def test_verbosity(self):
+        FileService.write_list_to_file(TestStep.test_file, ["1234"])
+        Step.display_conclusion = Mock()
+        Step.display_potential_solution = Mock()
+        Step(file=TestStep.test_file, verbose=False, solution=Combination("1234"))
+        Step.display_conclusion.assert_not_called()
+        Step.display_potential_solution.assert_not_called()
+
+    def test_compute_results_case_manual(self):
+        Step.gather_inputs = Mock(return_value=CombinationComparison(1, 0))
+        FileService.write_list_to_file(TestStep.test_file, ["1234"])
+        Step(file=TestStep.test_file)
+        Step.gather_inputs.assert_called()
+
+    def test_compute_results_case_automatic(self):
+        Step.gather_inputs = Mock()
+        FileService.write_list_to_file(TestStep.test_file, ["1234"])
+        Step(file=TestStep.test_file, solution=Combination("1234"))
+        Step.gather_inputs.assert_not_called()

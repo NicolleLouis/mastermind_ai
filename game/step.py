@@ -7,41 +7,57 @@ from game.guess import Guess
 
 
 class Step:
-    def __init__(self, file):
+    def __init__(
+            self,
+            file: str,
+            solution: Combination = None,
+            verbose: bool = False,
+    ):
         self.is_victory = False
         self.number_of_potential_solution_after_step = None
         self.number_of_potential_solution_before_step = None
 
         self.file = file
-        self.solution = self.choose_random_solution()
-        self.display_potential_solution()
-        self.accurate_guess, self.misplaced_guess = self.gather_inputs()
+        self.solution = solution
+        self.verbose = verbose
+
+        self.answer = self.choose_random_answer()
+        if self.verbose:
+            self.display_potential_solution()
+        self.result = self.compute_results()
         self.guess = Guess(
-            combination=self.solution,
-            combination_comparison=CombinationComparison(
-                accurate_guess=self.accurate_guess,
-                misplaced_guess=self.misplaced_guess,
-            )
+            combination=self.answer,
+            combination_comparison=self.result
         )
         self.update_file()
         self.update_victory()
-        self.display_conclusion()
+        if self.verbose:
+            self.display_conclusion()
 
     def display_potential_solution(self):
-        print(str(self.solution))
+        print(str(self.answer))
+
+    def compute_results(self):
+        if self.solution is not None:
+            return self.solution.compare_with_combination(self.answer)
+        else:
+            return self.gather_inputs()
 
     @staticmethod
     def gather_inputs():
         accurate_guess = int(input("Number of accurately placed guess: "))
         misplaced_guess = int(input("Number of misplaced guess number: "))
-        return accurate_guess, misplaced_guess
+        return CombinationComparison(
+            accurate_guess=accurate_guess,
+            misplaced_guess=misplaced_guess,
+        )
 
-    def choose_random_solution(self):
+    def choose_random_answer(self):
         potential_solutions = FileService.read_lines(self.file)
         self.number_of_potential_solution_before_step = len(potential_solutions)
-        solution = random.choice(potential_solutions)
+        answer = random.choice(potential_solutions)
         return Combination(
-            values=solution
+            values=answer
         )
 
     def update_file(self):
@@ -56,7 +72,7 @@ class Step:
 
     def display_conclusion(self):
         print("#####")
-        print(f"Solution proposed was: {str(self.solution)}")
+        print(f"Solution proposed was: {str(self.answer)}")
         print(
             f"Went from: {self.number_of_potential_solution_before_step} to"
             f" {self.number_of_potential_solution_after_step} possibilities"
